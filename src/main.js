@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const ratelimit = require('express-rate-limit');
 const { notFound, errorHandler } = require('./middleware');
 
-const { COM_PORT, WEB_PORT, LED_PORTS } = process.env;
+const { COM_PORT, WEB_PORT, LED_PINS } = process.env;
 
 const board = new five.Board({
 	port: COM_PORT,
@@ -18,7 +18,7 @@ const leds = [];
 
 function initLEDs() {
 	if (leds.length === 0) {
-		for (const port of LED_PORTS.split(',')) {
+		for (const port of LED_PINS.split(',')) {
 			leds.push(new five.Led(parseInt(port, 10)));
 		}
 	}

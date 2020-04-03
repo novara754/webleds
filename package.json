@@ -1,0 +1,31 @@
+{
+  "name": "webleds",
+  "version": "1.0.0",
+  "description": "Web-interface for controlling LEDs connected to an Arduino using Fermata.",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "nodemon .",
+    "test": "eslint src/ --ext js"
+  },
+  "keywords": [
+    "arduino",
+    "web",
+    "IoT"
+  ],
+  "author": "vzwGrey <vzwgrey@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.1.1",
+    "helmet": "^3.22.0",
+    "johnny-five": "^1.4.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-aqua": "^7.2.3",
+    "nodemon": "^2.0.2"
+  }
+}

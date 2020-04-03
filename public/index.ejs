@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Web LEDs</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<h1>Web LEDs</h1>
+	<p>Please press each LED to change its off/on state, then press submit to apply your changes!</p>
+
+	<% for (const port of ports) { %>
+	<label class="led-button">
+		<%= port %>
+		<input type="checkbox" checked="checked" name="<%= port %>">
+		<span class="checkmark"></span>
+	</label>
+	<% } %>
+
+	<button onclick="submit()">Submit</button>
+	<script src="main.js"></script>
+</body>
+</html>

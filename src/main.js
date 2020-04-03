@@ -9,32 +9,26 @@ const ratelimit = require('express-rate-limit');
 const { notFound, errorHandler } = require('./middleware');
 
 const { COM_PORT, WEB_PORT, LED_PORTS } = process.env;
-const ledPorts = LED_PORTS.split(',')
-	.map(p => p.trim())
-	.sort((a, b) => a - b);
 
 const board = new five.Board({
 	port: COM_PORT,
 	repl: false,
 });
-const leds = Object.fromEntries(ledPorts.map(p => [p, null]));
+const leds = [];
 
-function setLED(port, state) {
-	const portNum = parseInt(port, 10);
-	if (leds[port] === null) {
-		leds[port] = new five.Led(portNum);
-	}
-
-	if (state) {
-		leds[port].on();
-	} else {
-		leds[port].off();
+function initLEDs() {
+	if (leds.length === 0) {
+		for (const port of LED_PORTS.split(',')) {
+			leds.push(new five.Led(parseInt(port, 10)));
+		}
 	}
 }
 
 board.on('ready', () => {
-	for (const port of ledPorts) {
-		setLED(port, false);
+	initLEDs();
+
+	for (const led of leds) {
+		led.off();
 	}
 });
 
@@ -50,9 +44,15 @@ app.use('/api', ratelimit({
 
 app.post('/api/led', (req, res) => {
 	if (board.isReady) {
+		initLEDs();
+
 		const { leds: ledStates } = req.body;
-		for (const [port, state] of Object.entries(ledStates)) {
-			setLED(port, state);
+		for (const led of leds) {
+			if (ledStates[led.pin.toString()]) {
+				led.on();
+			} else {
+				led.off();
+			}
 		}
 
 		res.sendStatus(201);
@@ -62,7 +62,7 @@ app.post('/api/led', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.render(path.join(__dirname, '..', 'public', 'index.ejs'), { ports: ledPorts });
+	res.render(path.join(__dirname, '..', 'public', 'index.ejs'), { ports: leds.map(l => l.pin) });
 });
 
 app.use('/', express.static(path.join(__dirname, '..', 'public')));
